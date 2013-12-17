@@ -25,7 +25,7 @@ shtest.py: Testing suite proving Algorithm is working as hoped
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
 Command line usage:
-python Shss.py [-p "password"]{-s "n" "k" "Secret"/-sf "n" "k" "File"/-r "Shares"/ -rf "File"}
+python ShSS.py [-p "password"]{-s "n" "k" "Secret"/-sf "n" "k" "File"/-r "Shares"/ -rf "File"}
 
 -p "password" - optional argument, followed immediately by the password to use
 -s "n" "k" "Secret" - Specifies that "Secret" is to be split with n shares produced a minimum
