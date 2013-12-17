@@ -98,15 +98,13 @@ def split(n, k, secret, pword=""):
         key=[intmod(ord(c)%59) for c in tpw]
     else:
         key=[intmod(0) for c in xrange(64)]
-       
         
     seclen=len(secret)
     #Encode Secret as integers base 59
-    secretint=[intmod((b58conv(s))) for s in secret]
+    secretint=[intmod(b58conv(s)) for s in secret]
     #Scramble Secret with password
     for i in xrange(seclen):
         secretint[i]=secretint[i]+key[i%64]
-    
     polys=[]
     for i in xrange(seclen):
         temp=[]
@@ -197,26 +195,26 @@ def main(args=None):
             #If using file, shares are stored in files filebase(#).txt where # is in intmod
             file=sys.argv[sys.argv.index("-rf")+1]
             shares=[]
-
             if os.path.isfile(file):
-                for line in open(file,"r"):
+                for line in open(file,'r'):
                     testshare=line.strip()
-                    for c in testshare:
-                        try:
-                            temp=intmod(b58conv(c))
-                        except:
-                            print("\n-------------------------------------------------")
-                            print("The File: "+file+" has illegal characters!")
-                            print("Please ensure it only has alphanumeric characters")
-                            print("and does not contain l, o, or O")
-                            print("-------------------------------------------------\n")
-                            raise ValueError
-                    shares.append(testshare)
+                    if testshare:
+                        for c in testshare:
+                            try:
+                                temp=intmod(b58conv(c))
+                            except:
+                                print("\n-------------------------------------------------")
+                                print("The File: "+file+" has illegal characters!")
+                                print("Please ensure it only has alphanumeric characters")
+                                print("and does not contain l, o, or O")
+                                print("-------------------------------------------------\n")
+                                raise ValueError
+                        shares.append(testshare)
         else:
             #Manual input
             shares=[]
             for i in xrange(sys.argv.index("-r")+1,len(sys.argv)):
-                testshare=sys.argv[i]
+                testshare=sys.argv[i].strip()
                 if testshare[0]=="-":
                     break
                 for c in testshare:
@@ -238,8 +236,8 @@ def main(args=None):
             ns=int(sys.argv[sys.argv.index("-sf")+1])
             ks=int(sys.argv[sys.argv.index("-sf")+2])
             
-            sf=sys.argv[sys.argv.index("-sf")+3].split(".")
-            fi=open(sf,"r")
+            sf=sys.argv[sys.argv.index("-sf")+3]
+            fi=open(sf,'r')
             secret=fi.readline().strip()
             fi.close()
         else:
