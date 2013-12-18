@@ -67,15 +67,6 @@ N - Integer between 0 and 58 to be converted to a character in base 58
     
 This performs the reverse operation to b58conv in that it will take integers mod 59 to their
 equivalent in base 58 (plus 0)
-
--------------------------------------------------------------------------------------------------
-def genpad(len,pword):
-len - length of pad to create using the password
-pword - Password to generate the pad from
-
-This function is designed to create a re-creatable one time pad from a provided password. It was
-included to remove a bias that was in the previous method to do this which could lead to breaking
-the key if you had the same key under several encryptions.
 """
     
 import os
@@ -100,13 +91,15 @@ def split(n, k, secret, pword=""):
         print("         have unique identifiers this might cause trouble when")
         print("         attempting to recover the secret")
     
-    seclen=len(secret)   
+        
     #Construct key, If no password is provided, key is set to all zeros
     if pword:
-        key=genpad(seclen,pword)
+        tpw=hashlib.sha512(pword).digest()
+        key=[intmod(ord(c)%59) for c in tpw]
     else:
-        key=[intmod(0) for c in xrange(seclen)]
-
+        key=[intmod(0) for c in xrange(64)]
+        
+    seclen=len(secret)
     #Encode Secret as integers base 59
     secretint=[intmod(b58conv(s)) for s in secret]
     #Scramble Secret with password
@@ -130,11 +123,11 @@ def recover(shares, pword=""):
     #Intial Stuff
     intmod.set_base(59)
     #Construct key, If no password is provided, default password of "" is used
-    seclen=len(shares[0])-1
     if pword:
-        key=genpad(seclen,pword)
+        tpw=hashlib.sha512(pword).digest()
+        key=[intmod(ord(c)%59) for c in tpw]
     else:
-        key=[intmod(0) for c in xrange(seclen)]
+        key=[intmod(0) for c in xrange(64)]
        
      
     #Catch errors Two keys for the same point
@@ -167,7 +160,7 @@ def recover(shares, pword=""):
         l.append(lt)
     #Reconstruct Secret (To best knowledge), Completes Lagrange integration for each character
     #Evaluates at 0 and converts into a base 58 character
-    
+    seclen=len(shares[0])-1
     rect=[]
     for i in xrange(seclen):
         p=Polynomial(x0=intmod(0))
@@ -176,18 +169,6 @@ def recover(shares, pword=""):
         rect.append(r58conv(p.evaluate(intmod(0))-key[i%64]))
     return "".join(rect)
 
-def genpad(len,pword):
-    pool=hashlib.sha512(pword).digest()
-    count=0
-    pad=[]
-    while count<len:
-        for i in pool:
-            if (ord(i)<=235) and (count<len):
-                pad.append(ord(i)%59)
-                count=count+1
-        pool=hashlib.sha512(pool+pword).digest()
-    return pad
-    
 def b58conv(C):
     alph=['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','J','K','L','M','N','P','Q','R','S','T','U','V','W','X','Y','Z']
     if C in alph:
