@@ -77,7 +77,11 @@ class intmod(int):
     def __repr__(self):
         n = self.__class__.__name__
         return "%s(%r)" % (n, int(self))
+        
     @classmethod
     def rand(cls):
-        return intmod((int(ord(os.urandom(1))))%intmod.base)
+        while True:
+            c=ord(os.urandom(1))
+            if c<(255-255%intmod.base):
+                return intmod(c%intmod.base)
     multiply = __mul__

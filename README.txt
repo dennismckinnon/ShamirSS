@@ -90,6 +90,15 @@ N - Integer between 0 and 58 to be converted to a character in base 58
 This performs the reverse operation to b58conv in that it will take integers mod 59 to their
 equivalent in base 58 (plus 0)
 
+-------------------------------------------------------------------------------------------------
+def genpad(len,pword):
+len - length of pad to create using the password
+pword - Password to generate the pad from
+
+This function is designed to create a re-creatable one time pad from a provided password. It was
+included to remove a bias that was in the previous method to do this which could lead to breaking
+the key if you had the same key under several encryptions.
+
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 USAGE EXAMPLES:
