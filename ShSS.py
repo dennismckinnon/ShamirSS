@@ -229,6 +229,9 @@ def main(args=None):
                                 print("-------------------------------------------------\n")
                                 raise ValueError
                         shares.append(testshare)
+            else:
+                print "The File you specified does not seem to exist"
+                raise
         else:
             #Manual input
             shares=[]
@@ -256,9 +259,13 @@ def main(args=None):
             ks=int(sys.argv[sys.argv.index("-sf")+2])
             
             sf=sys.argv[sys.argv.index("-sf")+3]
-            fi=open(sf,'r')
-            secret=fi.readline().strip()
-            fi.close()
+            if os.path.isfile(sf):
+                fi=open(sf,'r')
+                secret=fi.readline().strip()
+                fi.close()
+            else:
+                print "The File you specified does not seem to exist"
+                raise
         else:
             ns=int(sys.argv[sys.argv.index("-s")+1])
             ks=int(sys.argv[sys.argv.index("-s")+2])
